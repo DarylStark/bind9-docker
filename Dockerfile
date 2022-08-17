@@ -14,7 +14,7 @@ RUN apk add build-base pkgconfig perl libuv-dev nghttp2-dev openssl-dev libcap-d
 RUN apk add python3 py3-pip
 
 # Create application directories
-RUN mkdir -p /app/bind9 /app/config /app/var /app/log /app/entrypoint
+RUN mkdir -p /app/bind9 /app/config /app/config-examples /app/var /app/log /app/entrypoint
 
 # Download BIND9 source-code
 # https://downloads.isc.org/isc/bind9/<version>/bind-<version>.tar.xz
@@ -30,14 +30,15 @@ RUN CFLAGS="-Ofast" ./configure --prefix=/app/bind9 --sysconfdir=/app/config --l
 RUN make
 RUN make install
 
-# TODO: Remove source code
+# Remove source code
+RUN rm -r /root/bind-$version/
 
 # Download root hints
-RUN wget https://www.internic.net/domain/named.root -O /app/config/root.hints
+RUN wget https://www.internic.net/domain/named.root -O /app/config-examples/root.hints
 
-# Create temporary configuration
-# TODO: copy configuration from local
-RUN touch /app/config/named.conf
+# Copy configuration from local
+COPY config-examples/ /app/config-examples/
+RUN mv /app/config/bind.keys /app/config-examples/bind.keys
 
 # Copy the entry-point tool
 COPY entrypoint/* /app/entrypoint/
