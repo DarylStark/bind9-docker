@@ -33,15 +33,18 @@ if __name__ == '__main__':
     logger.info('Checking if a `named.conf` file exists')
     if not os.path.isfile('/app/config/named.conf'):
         logger.info(
-            'The `named.conf` file doens\'t exist. Copying examples to config directory')
+            'The `named.conf` file doesn\'t exist. Copying examples to config directory')
         copy_tree(
             src='/app/config-examples/',
             dst='/app/config/')
         logger.info('Generating key for `rndc`')
-        # TODO: IMPLEMENT
+        os.system('/app/bind9/sbin/rndc-confgen -a')
     else:
         logger.info('The `named.conf` file does exist!')
 
     # Start the BIND9 server
+    logger.info(f'Starting BIND {version}')
+    os.system('/app/bind9/sbin/named -c /app/config/named.conf -f')
     while True:
         time.sleep(1)
+        print('.', end='', flush=True)

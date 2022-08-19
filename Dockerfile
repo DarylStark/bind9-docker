@@ -1,6 +1,9 @@
 # Base image
 FROM alpine:latest
 
+# Set the workdir to download the software
+WORKDIR /root
+
 # Environment variables
 ENV version=9.18.5
 
@@ -17,8 +20,6 @@ RUN apk add python3 py3-pip
 RUN mkdir -p /app/bind9 /app/config /app/config-examples /app/var /app/log /app/entrypoint
 
 # Download BIND9 source-code
-# https://downloads.isc.org/isc/bind9/<version>/bind-<version>.tar.xz
-WORKDIR /root
 RUN wget https://downloads.isc.org/isc/bind9/$version/bind-$version.tar.xz
 
 # Extract source-code
@@ -46,6 +47,9 @@ COPY entrypoint/* /app/entrypoint/
 # Install the entry-point tool
 RUN pip3 install -r /app/entrypoint/requirements.txt
 
+# Set the directory for the container
+WORKDIR /app
+
 # Set execution permissions so it can be started
 RUN chmod +x /app/entrypoint/start.py
 
@@ -58,4 +62,4 @@ EXPOSE 953/udp
 # Set the entry point and CMD
 # TODO: entry script
 ENTRYPOINT [ "/app/entrypoint/start.py" ]
-CMD [ "-g" ]
+CMD [ "-f" ]
