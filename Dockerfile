@@ -5,7 +5,7 @@ FROM alpine:latest
 WORKDIR /root
 
 # Environment variables
-ENV version=9.18.5
+ENV version=9.18.6
 
 # Update repository
 RUN apk update
