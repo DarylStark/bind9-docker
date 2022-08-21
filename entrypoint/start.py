@@ -22,7 +22,10 @@ if __name__ == '__main__':
 
     # Get the BIND9 version
     version_output = subprocess.run(
-        ['/app/bind9/sbin/named', '-v'], stdout=subprocess.PIPE)
+        args=[
+            '/app/bind9/sbin/named',
+            '-v'],
+        stdout=subprocess.PIPE)
     version = version_output.stdout.decode('utf-8').split(' ')[1]
     logger.info(f'BIND9 version: {version}')
 
@@ -38,13 +41,28 @@ if __name__ == '__main__':
             src='/app/config-examples/',
             dst='/app/config/')
         logger.info('Generating key for `rndc`')
-        os.system('/app/bind9/sbin/rndc-confgen -a')
+        #os.system('/app/bind9/sbin/rndc-confgen -a')
+        rv = subprocess.run(
+            args=[
+                '/app/bind9/sbin/rndc-confgen',
+                '-a',                   # Genere the clause and write to file
+                '-b', '512',            # 512 bits for the key
+                '-A', 'hmac-sha512'     # hmac-sha512 as algorithm
+            ],
+            capture_output=True)
+        if rv.returncode != 0:
+            logger.error('Error generating key for `rndc`')
+            logger.error(f'STDOUT: {rv.stdout}')
+            logger.error(f'STDERR: {rv.stderr}')
+            exit(1)
     else:
         logger.info('The `named.conf` file does exist!')
 
     # Start the BIND9 server
     logger.info(f'Starting BIND {version}')
-    os.system('/app/bind9/sbin/named -c /app/config/named.conf -f')
-    while True:
-        time.sleep(1)
-        print('.', end='', flush=True)
+    subprocess.run(
+        args=[
+            '/app/bind9/sbin/named',
+            '-f'
+        ],
+        capture_output=False)
