@@ -4,6 +4,9 @@ FROM alpine:latest
 # Set the workdir to download the software
 WORKDIR /root
 
+# Set the environment
+ENV PATH="${PATH}:/app/bind9/bin:/app/bind9/sbin"
+
 # Environment variables
 ENV version=9.18.6
 
