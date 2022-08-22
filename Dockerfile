@@ -63,6 +63,4 @@ EXPOSE 953/tcp
 EXPOSE 953/udp
 
 # Set the entry point and CMD
-# TODO: entry script
 ENTRYPOINT [ "/app/entrypoint/start.py" ]
-CMD [ "-f" ]

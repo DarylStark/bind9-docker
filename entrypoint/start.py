@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import time
+import sys
 from rich.logging import RichHandler
 import logging
 import subprocess
@@ -59,10 +59,13 @@ if __name__ == '__main__':
         logger.info('The `named.conf` file does exist!')
 
     # Start the BIND9 server
-    logger.info(f'Starting BIND {version}')
+    arguments = ['-f']
+    if len(sys.argv) > 1:
+        arguments = sys.argv[1:]
+    logger.info(f'Starting BIND {version} with arguments: {arguments}')
     subprocess.run(
         args=[
             '/app/bind9/sbin/named',
-            '-f'
+            *arguments
         ],
         capture_output=False)
