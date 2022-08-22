@@ -41,7 +41,6 @@ if __name__ == '__main__':
             src='/app/config-examples/',
             dst='/app/config/')
         logger.info('Generating key for `rndc`')
-        #os.system('/app/bind9/sbin/rndc-confgen -a')
         rv = subprocess.run(
             args=[
                 '/app/bind9/sbin/rndc-confgen',
