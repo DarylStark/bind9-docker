@@ -63,9 +63,12 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         arguments = sys.argv[1:]
     logger.info(f'Starting BIND {version} with arguments: {arguments}')
-    subprocess.run(
-        args=[
-            '/app/bind9/sbin/named',
-            *arguments
-        ],
-        capture_output=False)
+    try:
+        subprocess.run(
+            args=[
+                '/app/bind9/sbin/named',
+                *arguments
+            ],
+            capture_output=False)
+    except KeyboardInterrupt:
+        logger.info(f'Killed by KeyboardInterrupt')
