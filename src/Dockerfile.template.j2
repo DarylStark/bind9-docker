@@ -8,7 +8,7 @@ WORKDIR /root
 ENV PATH="${PATH}:/app/bind9/bin:/app/bind9/sbin"
 
 # Environment variables
-ENV version=9.18.6
+ENV version={{ version }}
 
 # Update repository
 RUN apk update
@@ -41,11 +41,11 @@ RUN rm -r /root/bind-$version/
 RUN wget https://www.internic.net/domain/named.root -O /app/config-examples/root.hints
 
 # Copy configuration from local
-COPY config-examples/ /app/config-examples/
+COPY container-folders/config-examples/ /app/config-examples/
 RUN mv /app/config/bind.keys /app/config-examples/bind.keys
 
 # Copy the entry-point tool
-COPY entrypoint/* /app/entrypoint/
+COPY container-folders/entrypoint/* /app/entrypoint/
 
 # Install the entry-point tool
 RUN pip3 install -r /app/entrypoint/requirements.txt
