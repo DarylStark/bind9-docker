@@ -30,7 +30,7 @@ RUN tar xf bind-$version.tar.xz
 
 # Compile source-code
 WORKDIR /root/bind-$version/
-RUN CFLAGS="-Ofast" ./configure --prefix=/app/bind9 --sysconfdir=/app/config --localstatedir=/app/var
+RUN CFLAGS="-Ofast" ./configure --prefix=/app/bind9 --sysconfdir=/app/config --localstatedir=/app/var --without-python
 RUN make
 RUN make install
 
