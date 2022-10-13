@@ -46,6 +46,10 @@ if __name__ == '__main__':
                         action='store_true',
                         default=False,
                         help='Tag as `stable` and `latests` version')
+    parser.add_argument('--publish',
+                        action='store_true',
+                        default=False,
+                        help='Publish the image to DockerHub repository')
 
     # Parse the arguments
     args = parser.parse_args()
@@ -119,10 +123,10 @@ if __name__ == '__main__':
         logging.info(f'- {tag}')
 
     # Get the args
-    args = ['docker', 'build', *tags_args, '.']
+    cmd_args = ['docker', 'build', *tags_args, '.']
 
     build = Popen(
-        args=args,
+        args=cmd_args,
         cwd=directory_name)
     build.wait()
 
@@ -132,7 +136,8 @@ if __name__ == '__main__':
         sys.exit(1)
 
     # Publish image
-    for tag in tags:
-        logging.info(f'Pushing tag "{tag}"')
-        push = Popen(args=['docker', 'push', tag])
-        push.wait()
+    if args.publish:
+        for tag in tags:
+            logging.info(f'Pushing tag "{tag}"')
+            push = Popen(args=['docker', 'push', tag])
+            push.wait()
